@@ -1,0 +1,423 @@
+/* ===================================================
+   Pensiune Turistică „La Codru" — style.css
+   Author: Catanoi Riccardo
+   =================================================== */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --green-dark: #1C3A20;
+    --green-mid:  #2A5230;
+    --linen:      #E8E0D0;
+    --linen-dark: #D9CEBC;
+    --text-dark:  #2B2B1E;
+    --text-muted: #6B6B5A;
+    --white-warm: #F5F2EC;
+}
+
+body {
+    font-family: 'Jost', sans-serif;
+    background-color: var(--linen);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== SARCINA 1: HEADER STICKY CU GLASSMORPHISM ===== */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: rgba(28, 58, 32, 0.82);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 0 2.5rem;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(245, 242, 236, 0.08);
+}
+
+.header-inner {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--white-warm);
+    text-decoration: none;
+    letter-spacing: 0.03em;
+    transition: opacity 0.2s ease;
+}
+
+.logo:hover {
+    opacity: 0.85;
+}
+
+.main-nav .nav-list {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+/* ===== ANIMATED UNDERLINE PE NAV LINKS =====
+   Pseudo-elementul ::after creeaza o linie invizibila sub link.
+   La hover, linia se "desfasoara" de la stanga la dreapta prin
+   tranzitia transform: scaleX(0 → 1).
+   transform-origin: left asigura ca animatia porneste din stanga.
+*/
+.nav-link {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--white-warm);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+    position: relative;
+    padding-bottom: 3px;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--white-warm);
+    /* Stare initiala: comprimat la 0 latime */
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.nav-link:hover {
+    opacity: 1;
+}
+
+.nav-link:hover::after {
+    /* La hover: linia se desfasoara spre dreapta */
+    transform: scaleX(1);
+}
+
+.nav-link.active {
+    opacity: 1;
+}
+
+.nav-link.active::after {
+    transform: scaleX(1);
+    opacity: 0.5;
+}
+
+/* ===== MAIN ===== */
+.main-content {
+    flex: 1;
+}
+
+/* ===== HERO ===== */
+.hero-section {
+    background-color: var(--linen);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem 2rem 4rem;
+    min-height: calc(100vh - 140px);
+}
+
+.hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.6rem;
+    font-weight: 300;
+    color: var(--text-dark);
+    letter-spacing: 0.02em;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.hero-image-wrapper {
+    width: 340px;
+    height: 340px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1.5px solid var(--text-dark);
+    animation: fadeInScale 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.hero-image-wrapper:hover .hero-image {
+    transform: scale(1.04);
+}
+
+/* ===== SARCINA 2: GRID SERVICII AUTO-ADAPTIV =====
+   1fr = o fractiune egala din spatiul ramas dupa gap-uri.
+   auto-fit calculeaza cate coloane de minim 280px incap,
+   iar spatiul ramas se imparte egal — zero media queries.
+*/
+.servicii-section {
+    background-color: var(--linen);
+    padding: 3rem 4rem 5rem;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* ===== HOVER CARDURI CU RIDICARE ȘI UMBRĂ =====
+   cubic-bezier(0.25,0.46,0.45,0.94) = ease-out personalizat:
+   porneste rapid, incetineste la sfarsit → senzatie de "ridicare" naturala.
+   Box-shadow dublu: umbra apropiata + umbra indepartata simuleaza lumina reala.
+*/
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--white-warm);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(43, 43, 30, 0.06);
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                box-shadow 0.3s ease;
+    cursor: default;
+}
+
+.card:hover {
+    transform: translateY(-12px);
+    box-shadow:
+        0 8px 16px rgba(43, 43, 30, 0.08),
+        0 20px 40px rgba(43, 43, 30, 0.10);
+}
+
+.card-image-wrapper {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1.5px solid var(--text-dark);
+    background-color: var(--linen-dark);
+    transition: border-color 0.3s ease;
+}
+
+.card:hover .card-image-wrapper {
+    border-color: var(--green-mid);
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.card:hover .card-image {
+    transform: scale(1.06);
+}
+
+.card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--text-dark);
+    text-align: center;
+    transition: color 0.25s ease;
+}
+
+.card:hover .card-title {
+    color: var(--green-mid);
+}
+
+.card-desc {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.6;
+}
+
+/* ===== SARCINA 3: SECȚIUNEA MISIUNE ===== */
+.mission-section {
+    background-color: var(--green-dark);
+    padding: 5rem 4rem;
+}
+
+.mission-label {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(245, 242, 236, 0.5);
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.mission-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--white-warm);
+    text-align: center;
+    margin-bottom: 3rem;
+    letter-spacing: 0.02em;
+}
+
+/* Desktop: imagine stanga (order:1), text dreapta (order:2) */
+.mission-inner {
+    display: flex;
+    align-items: center;
+    gap: 4rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.mission-image {
+    flex: 1;
+    order: 1;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1.5px solid rgba(245, 242, 236, 0.3);
+    background-color: var(--green-mid);
+    min-width: 0;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.mission-image:hover {
+    border-color: rgba(245, 242, 236, 0.6);
+    box-shadow: 0 0 0 4px rgba(245, 242, 236, 0.06);
+}
+
+.mission-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mission-image:hover img {
+    transform: scale(1.04);
+}
+
+.mission-text {
+    flex: 1.4;
+    order: 2;
+    min-width: 0;
+}
+
+.mission-text p {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: rgba(245, 242, 236, 0.75);
+    line-height: 1.85;
+    margin-bottom: 1rem;
+}
+
+.mission-text p:last-child { margin-bottom: 0; }
+
+/* Mobil: flex-direction column, imagine DEASUPRA textului */
+@media (max-width: 640px) {
+    .mission-inner {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .mission-image {
+        order: 1;
+        width: 200px;
+        flex: none;
+    }
+
+    .mission-text {
+        order: 2;
+        width: 100%;
+        text-align: center;
+    }
+
+    .servicii-section {
+        padding: 3rem 1.5rem 4rem;
+    }
+}
+
+/* ===== FOOTER ===== */
+.site-footer {
+    background-color: var(--green-dark);
+    padding: 1.25rem 2.5rem;
+    border-top: 1px solid rgba(245, 242, 236, 0.08);
+}
+
+.footer-inner {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+.footer-contact {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.footer-icon {
+    font-size: 1.2rem;
+    color: var(--white-warm);
+}
+
+.footer-text {
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--white-warm);
+    letter-spacing: 0.02em;
+}
+
+/* ===== SCROLL REVEAL =====
+   Clasa .reveal = stare initiala (invizibil, coborat 24px).
+   Clasa .visible (adaugata de IntersectionObserver) = stare finala.
+   Tranzitia CSS face toata animatia — fara biblioteci externe.
+*/
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s ease,
+                transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
